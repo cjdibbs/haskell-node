@@ -1,28 +1,23 @@
 # https://github.com/darinmorrison/docker-haskell/tree/docker-library
-FROM haskell:7.8
+# FROM haskell:7.8
+
+
+FROM node:6.1
 
 RUN apt-get update && apt-get install -y \
-	wget \
-	python \
-	make \
-	g++
+	curl
 
-# Install Node.js
-RUN \
-  cd /tmp && \
-  wget http://nodejs.org/dist/node-latest.tar.gz && \
-  tar xvzf node-latest.tar.gz && \
-  rm -f node-latest.tar.gz && \
-  cd node-v* && \
-  ./configure && \
-  CXX="g++ -Wno-unused-local-typedefs" make && \
-  CXX="g++ -Wno-unused-local-typedefs" make install && \
-  cd /tmp && \
-  rm -rf /tmp/node-v* && \
-  npm install -g npm && \
-  printf '\n# Node.js\nexport PATH="node_modules/.bin:$PATH"' >> /root/.bashrc
+RUN apt-get update && \
+    apt-get install -y wget libgmp3-dev zlib1g-dev && \
+    cd / && \
+    wget https://haskell.org/platform/download/7.10.3/haskell-platform-7.10.3-unknown-posix-x86_64.tar.gz
+RUN tar xf /haskell-platform-7.10.3-unknown-posix-x86_64.tar.gz
+RUN sh /install-haskell-platform.sh && \
+    rm /haskell-platform-7.10.3-unknown-posix-x86_64.tar.gz && \
+    cabal update && cabal install --global cabal-install && \
+    apt-get clean
 
 RUN npm install -g gulp
 RUN npm install -g jspm
 
-CND ["bash"]
+CMD ["bash"]
