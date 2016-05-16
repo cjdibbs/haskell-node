@@ -17,7 +17,6 @@ RUN sh /install-haskell-platform.sh && \
     cabal update && cabal install --global cabal-install && \
     apt-get clean
 
-RUN npm install -g gulp
-RUN npm install -g jspm
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 CMD ["bash"]
